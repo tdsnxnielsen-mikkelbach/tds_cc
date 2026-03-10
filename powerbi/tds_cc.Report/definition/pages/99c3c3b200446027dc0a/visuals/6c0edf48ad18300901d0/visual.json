@@ -1,0 +1,76 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "6c0edf48ad18300901d0",
+  "position": {
+    "x": 500.00000000000006,
+    "y": 360,
+    "z": 3000,
+    "height": 150,
+    "width": 280,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "gauge",
+    "query": {
+      "queryState": {
+        "MaxValue": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "CostExports"
+                    }
+                  },
+                  "Property": "Budget"
+                }
+              },
+              "queryRef": "CostExports.Budget",
+              "nativeQueryRef": "Budget",
+              "format": "#,0.00 \"kr.\";-#,0.00 \"kr.\";#,0.00 \"kr.\""
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "CostExports"
+                    }
+                  },
+                  "Property": "Total Cost"
+                }
+              },
+              "queryRef": "CostExports.Total Cost",
+              "nativeQueryRef": "Total Cost",
+              "format": "#,0.00 \"kr.\";-#,0.00 \"kr.\";#,0.00 \"kr.\""
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "CostExports"
+                  }
+                },
+                "Property": "Total Cost"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

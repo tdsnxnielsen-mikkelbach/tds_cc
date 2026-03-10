@@ -1,0 +1,62 @@
+table DateTable
+	lineageTag: 95d7b15c-aeaf-4c12-8fb7-382eea629917
+	dataCategory: Time
+
+	column Date
+		isKey
+		formatString: General Date
+		lineageTag: 89a5cc71-b790-4c48-a292-22e9c18f6316
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: 73624a9d-ff98-4d89-abc9-e889204b03f4
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		formatString: 0
+		lineageTag: 272230f3-184f-408c-b510-5fc12190c608
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Month]
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName
+		lineageTag: 3e764ca0-71c7-47be-8eba-8ec7efb09063
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [MonthName]
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthYear
+		lineageTag: bac876c0-78bd-4f2c-b78d-aca9574e884a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [MonthYear]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DateTable = calculated
+		mode: import
+		source =
+				
+				ADDCOLUMNS (
+				    CALENDAR ( DATE ( 2025, 1, 1 ), DATE ( 2028, 12, 31 ) ),
+				    "Year", YEAR ( [Date] ),
+				    "Month", MONTH ( [Date] ),
+				    "MonthName", FORMAT ( [Date], "MMM" ),
+				    "MonthYear", FORMAT ( [Date], "MMM YYYY" )
+				)
+
+	annotation PBI_Id = d7d371059056400cbc391661e859f508
+

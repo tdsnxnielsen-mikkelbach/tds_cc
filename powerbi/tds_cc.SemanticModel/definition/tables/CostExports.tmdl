@@ -1,0 +1,689 @@
+table CostExports
+	lineageTag: fa861be7-16b3-4601-9971-d2df8938a856
+
+	measure 'Total Cost' = SUM ( CostExports[costInBillingCurrency] )
+		formatString: 0
+		lineageTag: cc7f1940-35b2-4105-99c4-c0c68a6e148b
+
+	measure 'Cost MTD' = TOTALMTD ( [Total Cost], DateTable[Date] )
+		formatString: 0
+		lineageTag: c0e6ac24-f509-407e-b8f7-b92a0aa63202
+
+	measure 'Cost QTD' = TOTALQTD ( [Total Cost], DateTable[Date] )
+		formatString: 0
+		lineageTag: 2ae21595-3970-4f50-8df0-09e5a1a8430e
+
+	measure 'Cost YTD' = TOTALYTD ( [Total Cost], DateTable[Date] )
+		formatString: 0
+		lineageTag: ceedbed1-c3c1-49b7-b06c-a46d9c6973ab
+
+	measure 'Cost Prior Month' = CALCULATE ( [Total Cost], PREVIOUSMONTH ( DateTable[Date] ) )
+		formatString: 0
+		lineageTag: 192d3887-801d-4b94-9cef-231eac1c2afc
+
+	measure 'Cost MoM Change' = [Total Cost] - [Cost Prior Month]
+		formatString: 0
+		lineageTag: a38eb17f-7848-4d6b-b1ce-d119db79cf71
+
+	measure 'Cost MoM %' = DIVIDE ( [Cost MoM Change], [Cost Prior Month] )
+		lineageTag: 6a192956-e8c6-41ac-99aa-3bcafe198aac
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Cost Prior Year' = CALCULATE ( [Total Cost], SAMEPERIODLASTYEAR ( DateTable[Date] ) )
+		formatString: 0
+		lineageTag: 30c0337c-79c3-48a4-8ec6-7bb91a19370e
+
+	measure 'Cost YoY %' = DIVIDE ( [Total Cost] - [Cost Prior Year], [Cost Prior Year] )
+		lineageTag: 1fe5930c-ea53-4150-af3a-b7e40b146079
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Daily Cost' = AVERAGEX ( VALUES ( DateTable[Date] ), CALCULATE ( [Total Cost] ) )
+		lineageTag: 4e91bc54-9d6b-46ec-a764-d348489c0c24
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Monthly Cost' = AVERAGEX ( VALUES ( DateTable[MonthYear] ), CALCULATE ( [Total Cost] ) )
+		lineageTag: 8baab6b1-df82-4f35-b48a-1e88480eb2b2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Cost Month Forecast' = VAR _Days = DAY ( EOMONTH ( TODAY (), 0 ) ) VAR _Day = DAY ( TODAY () ) RETURN IF ( _Day > 0, DIVIDE ( [Cost MTD], _Day ) * _Days )
+		lineageTag: 5e5bcc39-1ba6-499d-ae07-cb39d696423b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Top N Cost Share %' = DIVIDE ( [Total Cost], CALCULATE ( [Total Cost], ALL ( CostExports ) ) )
+		lineageTag: d0be5e52-5541-4400-a61e-3d994ea01a73
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Cost DKK' = "kr. " & FORMAT ( [Total Cost], "#,##0.00" )
+		lineageTag: f8f34d1e-3b07-4456-8669-8854822a157d
+
+	measure 'Total Cost USD' = SUMX ( CostExports, VALUE ( IF ( [costInUsd] = "", "0", [costInUsd] ) ) )
+		lineageTag: 2707092d-9e97-4226-8596-04d452574f5b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Exchange Rate' = AVERAGE ( CostExports[exchangeRatePricingToBilling] )
+		formatString: 0
+		lineageTag: aeb0c60f-d5c2-4b8a-8f8b-3fcf2f889b10
+
+	measure 'Rolling 3M Avg' = AVERAGEX ( DATESINPERIOD ( DateTable[Date], LASTDATE ( DateTable[Date] ), -3, MONTH ), CALCULATE ( [Total Cost] ) )
+		lineageTag: 41d8f962-9040-4407-819e-1bcb1a4fb962
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Budget = 1000
+		formatString: 0
+		lineageTag: 65dc7ac0-4d7c-45e9-bf34-6644ad2eb19d
+
+	measure 'Budget Variance' = [Total Cost] - [Budget]
+		lineageTag: 22e36637-454e-4f5d-9247-20899de7e7a3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Budget Variance %' = DIVIDE ( [Budget Variance], [Budget] )
+		lineageTag: 0bf41f3d-5e4f-4b73-b878-cf4590e3846f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column invoiceId
+		dataType: string
+		lineageTag: f5f8bfed-367f-40de-90bd-0a0d1e5c187b
+		summarizeBy: none
+		sourceColumn: invoiceId
+
+		annotation SummarizationSetBy = Automatic
+
+	column previousInvoiceId
+		dataType: string
+		lineageTag: af8a2095-caca-4776-8abf-201ef79fb8a5
+		summarizeBy: none
+		sourceColumn: previousInvoiceId
+
+		annotation SummarizationSetBy = Automatic
+
+	column billingAccountId
+		dataType: string
+		lineageTag: c3ac8756-4942-41a0-8f5e-b98b06245d23
+		summarizeBy: none
+		sourceColumn: billingAccountId
+
+		annotation SummarizationSetBy = Automatic
+
+	column billingAccountName
+		dataType: string
+		lineageTag: 12e949d7-0664-4312-927f-da40004b6024
+		summarizeBy: none
+		sourceColumn: billingAccountName
+
+		annotation SummarizationSetBy = Automatic
+
+	column billingProfileId
+		dataType: string
+		lineageTag: 9c5881fa-4d49-4061-a627-f20379963990
+		summarizeBy: none
+		sourceColumn: billingProfileId
+
+		annotation SummarizationSetBy = Automatic
+
+	column billingProfileName
+		dataType: string
+		lineageTag: cbd07bc9-e60a-406e-a90c-6cdfd72934f1
+		summarizeBy: none
+		sourceColumn: billingProfileName
+
+		annotation SummarizationSetBy = Automatic
+
+	column invoiceSectionId
+		dataType: string
+		lineageTag: e18a6a30-486e-4bdb-9b7f-19e91ffbed9a
+		summarizeBy: none
+		sourceColumn: invoiceSectionId
+
+		annotation SummarizationSetBy = Automatic
+
+	column invoiceSectionName
+		dataType: string
+		lineageTag: 811e6a52-f8d9-4f5f-9a2d-33abb358b7d0
+		summarizeBy: none
+		sourceColumn: invoiceSectionName
+
+		annotation SummarizationSetBy = Automatic
+
+	column resellerName
+		dataType: string
+		lineageTag: 6cfac63f-2d2f-41bc-99ed-c974aae90c64
+		summarizeBy: none
+		sourceColumn: resellerName
+
+		annotation SummarizationSetBy = Automatic
+
+	column resellerMpnId
+		dataType: string
+		lineageTag: 3e52d376-dc83-432c-bcd4-2127aec61f44
+		summarizeBy: none
+		sourceColumn: resellerMpnId
+
+		annotation SummarizationSetBy = Automatic
+
+	column costCenter
+		dataType: string
+		lineageTag: 6a5f587b-0e5e-41a3-a354-d80fce47c0c9
+		summarizeBy: none
+		sourceColumn: costCenter
+
+		annotation SummarizationSetBy = Automatic
+
+	column billingPeriodEndDate
+		dataType: string
+		lineageTag: 83b3bafa-abd1-46c1-9aac-fe26b0f03e80
+		summarizeBy: none
+		sourceColumn: billingPeriodEndDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column billingPeriodStartDate
+		dataType: string
+		lineageTag: 9c13bcb4-c552-4160-a856-9a2991d40046
+		summarizeBy: none
+		sourceColumn: billingPeriodStartDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column servicePeriodEndDate
+		dataType: string
+		lineageTag: 80edae3d-7df8-4630-9601-a446ae1d8f69
+		summarizeBy: none
+		sourceColumn: servicePeriodEndDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column servicePeriodStartDate
+		dataType: string
+		lineageTag: 1d1cd79b-24f7-41b3-9cde-7e157e115913
+		summarizeBy: none
+		sourceColumn: servicePeriodStartDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column date
+		dataType: string
+		lineageTag: a4ba3617-9108-4ccd-b30d-f1e9e0c67739
+		summarizeBy: none
+		sourceColumn: date
+
+		annotation SummarizationSetBy = Automatic
+
+	column serviceFamily
+		dataType: string
+		lineageTag: 05ad3132-dc91-4c5a-b1c4-057a9368ebad
+		summarizeBy: none
+		sourceColumn: serviceFamily
+
+		annotation SummarizationSetBy = Automatic
+
+	column productOrderId
+		dataType: string
+		lineageTag: fbe448b3-3e11-41bb-9358-09bec0751591
+		summarizeBy: none
+		sourceColumn: productOrderId
+
+		annotation SummarizationSetBy = Automatic
+
+	column productOrderName
+		dataType: string
+		lineageTag: e2c95e00-1aa9-4d96-8256-4283366e5009
+		summarizeBy: none
+		sourceColumn: productOrderName
+
+		annotation SummarizationSetBy = Automatic
+
+	column consumedService
+		dataType: string
+		lineageTag: d9ec3758-7fc2-49cd-b86a-e43bc6ee6f77
+		summarizeBy: none
+		sourceColumn: consumedService
+
+		annotation SummarizationSetBy = Automatic
+
+	column meterId
+		dataType: string
+		lineageTag: 795afae6-0eb3-464b-a554-0b6fa2863c1f
+		summarizeBy: none
+		sourceColumn: meterId
+
+		annotation SummarizationSetBy = Automatic
+
+	column meterName
+		dataType: string
+		lineageTag: ad538bb8-ddcf-413f-ac8e-832a36786b3d
+		summarizeBy: none
+		sourceColumn: meterName
+
+		annotation SummarizationSetBy = Automatic
+
+	column meterCategory
+		dataType: string
+		lineageTag: c6f9b8b6-5b62-4a73-91ff-c9fdf0a220c7
+		summarizeBy: none
+		sourceColumn: meterCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column meterSubCategory
+		dataType: string
+		lineageTag: bba2cbea-a2f3-4561-85c6-bb629e2bbe7e
+		summarizeBy: none
+		sourceColumn: meterSubCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column meterRegion
+		dataType: string
+		lineageTag: 82749310-78d0-43a9-9901-d25a6e8303e8
+		summarizeBy: none
+		sourceColumn: meterRegion
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductId
+		dataType: string
+		lineageTag: cf321f9f-6219-4be8-8e5a-2097a5c5f26d
+		summarizeBy: none
+		sourceColumn: ProductId
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductName
+		dataType: string
+		lineageTag: ad8e0c12-1a74-4ccc-bbdd-276b14880a46
+		summarizeBy: none
+		sourceColumn: ProductName
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubscriptionId
+		dataType: string
+		lineageTag: 1e23068b-31e3-4d55-8369-269fc82739bb
+		summarizeBy: none
+		sourceColumn: SubscriptionId
+
+		annotation SummarizationSetBy = Automatic
+
+	column subscriptionName
+		dataType: string
+		lineageTag: ad476188-199f-4893-9b51-9286e8311daf
+		summarizeBy: none
+		sourceColumn: subscriptionName
+
+		annotation SummarizationSetBy = Automatic
+
+	column publisherType
+		dataType: string
+		lineageTag: 189cd2ff-2f40-4c1d-8559-503b210aec99
+		summarizeBy: none
+		sourceColumn: publisherType
+
+		annotation SummarizationSetBy = Automatic
+
+	column publisherId
+		dataType: string
+		lineageTag: c470362d-a9e3-448d-8968-bd28b084d57b
+		summarizeBy: none
+		sourceColumn: publisherId
+
+		annotation SummarizationSetBy = Automatic
+
+	column publisherName
+		dataType: string
+		lineageTag: 71dc2f74-72e9-49b3-aac3-d99fef7e334c
+		summarizeBy: none
+		sourceColumn: publisherName
+
+		annotation SummarizationSetBy = Automatic
+
+	column resourceGroupName
+		dataType: string
+		lineageTag: 9a719c46-2016-4f87-8d86-355cf7cdf29e
+		summarizeBy: none
+		sourceColumn: resourceGroupName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResourceId
+		dataType: string
+		lineageTag: eb669f62-d19a-41cc-a236-641433febabe
+		summarizeBy: none
+		sourceColumn: ResourceId
+
+		annotation SummarizationSetBy = Automatic
+
+	column resourceLocation
+		dataType: string
+		lineageTag: dc5af813-0168-45eb-998f-865383729496
+		summarizeBy: none
+		sourceColumn: resourceLocation
+
+		annotation SummarizationSetBy = Automatic
+
+	column location
+		dataType: string
+		lineageTag: 1b761d14-953b-4766-9270-f91eb41b2892
+		summarizeBy: none
+		sourceColumn: location
+
+		annotation SummarizationSetBy = Automatic
+
+	column effectivePrice
+		dataType: string
+		lineageTag: 4644f7c2-cd95-490f-a9a0-b1b54bc74ed4
+		summarizeBy: none
+		sourceColumn: effectivePrice
+
+		annotation SummarizationSetBy = Automatic
+
+	column quantity
+		dataType: string
+		lineageTag: 9c2aef40-4b62-4be5-bebe-bd8ff07503d2
+		summarizeBy: none
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column unitOfMeasure
+		dataType: string
+		lineageTag: d30e78bd-b617-45f9-80ab-4159fe330c7d
+		summarizeBy: none
+		sourceColumn: unitOfMeasure
+
+		annotation SummarizationSetBy = Automatic
+
+	column chargeType
+		dataType: string
+		lineageTag: 92410499-6f1b-4b68-a4a8-da461745895c
+		summarizeBy: none
+		sourceColumn: chargeType
+
+		annotation SummarizationSetBy = Automatic
+
+	column billingCurrency
+		dataType: string
+		lineageTag: 9291dd3a-3d40-48d2-8f71-d769959a31a2
+		summarizeBy: none
+		sourceColumn: billingCurrency
+
+		annotation SummarizationSetBy = Automatic
+
+	column pricingCurrency
+		dataType: string
+		lineageTag: 70f90976-47c8-4d18-95e8-e83537fc33c8
+		summarizeBy: none
+		sourceColumn: pricingCurrency
+
+		annotation SummarizationSetBy = Automatic
+
+	column costInBillingCurrency
+		dataType: double
+		lineageTag: 82623fd5-56f1-43c7-b2e7-214191bf6742
+		summarizeBy: sum
+		sourceColumn: costInBillingCurrency
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column costInPricingCurrency
+		dataType: string
+		lineageTag: f9ee0f56-2b5b-4a72-958e-b09ba47f76fa
+		summarizeBy: none
+		sourceColumn: costInPricingCurrency
+
+		annotation SummarizationSetBy = Automatic
+
+	column costInUsd
+		dataType: string
+		lineageTag: ac411875-3578-42b7-937c-0c1e6075d834
+		summarizeBy: none
+		sourceColumn: costInUsd
+
+		annotation SummarizationSetBy = Automatic
+
+	column paygCostInBillingCurrency
+		dataType: string
+		lineageTag: 66618055-4a57-4ba0-b2f7-5c8ab8b22b8f
+		summarizeBy: none
+		sourceColumn: paygCostInBillingCurrency
+
+		annotation SummarizationSetBy = Automatic
+
+	column paygCostInUsd
+		dataType: string
+		lineageTag: 7aec13e4-b161-40d9-ba9c-59ea882b02fe
+		summarizeBy: none
+		sourceColumn: paygCostInUsd
+
+		annotation SummarizationSetBy = Automatic
+
+	column exchangeRatePricingToBilling
+		dataType: string
+		lineageTag: 7bf23147-d538-4ee0-8c3c-8fdef41a74e4
+		summarizeBy: none
+		sourceColumn: exchangeRatePricingToBilling
+
+		annotation SummarizationSetBy = Automatic
+
+	column exchangeRateDate
+		dataType: string
+		lineageTag: 3d19d491-59da-4f18-be63-d42ce060a917
+		summarizeBy: none
+		sourceColumn: exchangeRateDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column isAzureCreditEligible
+		dataType: string
+		lineageTag: 8cdee810-5ba6-4b18-a0c1-71306a879701
+		summarizeBy: none
+		sourceColumn: isAzureCreditEligible
+
+		annotation SummarizationSetBy = Automatic
+
+	column serviceInfo1
+		dataType: string
+		lineageTag: 3a46ca1f-7cc4-46dc-81d9-46e47a2c98b9
+		summarizeBy: none
+		sourceColumn: serviceInfo1
+
+		annotation SummarizationSetBy = Automatic
+
+	column serviceInfo2
+		dataType: string
+		lineageTag: fbb7b9c3-ce60-43a1-bc3b-864f658f67fa
+		summarizeBy: none
+		sourceColumn: serviceInfo2
+
+		annotation SummarizationSetBy = Automatic
+
+	column additionalInfo
+		dataType: string
+		lineageTag: 60f3ca40-fad1-4fdc-866a-a85824080ea1
+		summarizeBy: none
+		sourceColumn: additionalInfo
+
+		annotation SummarizationSetBy = Automatic
+
+	column tags
+		dataType: string
+		lineageTag: 7dc169f8-ea5f-4f0f-a7eb-274ec301c04b
+		summarizeBy: none
+		sourceColumn: tags
+
+		annotation SummarizationSetBy = Automatic
+
+	column PayGPrice
+		dataType: string
+		lineageTag: d0a3197b-6f30-4af4-9e9c-de95bcce3d22
+		summarizeBy: none
+		sourceColumn: PayGPrice
+
+		annotation SummarizationSetBy = Automatic
+
+	column frequency
+		dataType: string
+		lineageTag: 7dcc2574-aa4a-4ac4-86f7-0cd89f5aec17
+		summarizeBy: none
+		sourceColumn: frequency
+
+		annotation SummarizationSetBy = Automatic
+
+	column term
+		dataType: string
+		lineageTag: 29e7b176-8c6b-41b2-879e-ab0775ea7c70
+		summarizeBy: none
+		sourceColumn: term
+
+		annotation SummarizationSetBy = Automatic
+
+	column reservationId
+		dataType: string
+		lineageTag: 489de3ca-995e-4f44-b896-113209740bfb
+		summarizeBy: none
+		sourceColumn: reservationId
+
+		annotation SummarizationSetBy = Automatic
+
+	column reservationName
+		dataType: string
+		lineageTag: 0c26795f-8be9-4186-9003-7a625892572a
+		summarizeBy: none
+		sourceColumn: reservationName
+
+		annotation SummarizationSetBy = Automatic
+
+	column pricingModel
+		dataType: string
+		lineageTag: f28224b1-d9b5-4309-bd10-ec86ae740a7a
+		summarizeBy: none
+		sourceColumn: pricingModel
+
+		annotation SummarizationSetBy = Automatic
+
+	column unitPrice
+		dataType: string
+		lineageTag: cf5544c7-0e3f-4d08-80e9-595335649d6e
+		summarizeBy: none
+		sourceColumn: unitPrice
+
+		annotation SummarizationSetBy = Automatic
+
+	column costAllocationRuleName
+		dataType: string
+		lineageTag: 88bb1893-98cf-4c28-a068-49881b6bce04
+		summarizeBy: none
+		sourceColumn: costAllocationRuleName
+
+		annotation SummarizationSetBy = Automatic
+
+	column benefitId
+		dataType: string
+		lineageTag: 9f2e5830-d816-4911-826a-b83f28b69b74
+		summarizeBy: none
+		sourceColumn: benefitId
+
+		annotation SummarizationSetBy = Automatic
+
+	column benefitName
+		dataType: string
+		lineageTag: cb53b352-cb29-49ae-a5e2-c78ad2784246
+		summarizeBy: none
+		sourceColumn: benefitName
+
+		annotation SummarizationSetBy = Automatic
+
+	column provider
+		dataType: string
+		lineageTag: a5bf3de3-8fcf-4483-bdf1-ff9680a97f01
+		summarizeBy: none
+		sourceColumn: provider
+
+		annotation SummarizationSetBy = Automatic
+
+	partition CostExports = m
+		mode: import
+		source =
+				let
+				    StorageAccount = StorageAccountName,
+				    Container      = ContainerName,
+				    FolderPath     = RootFolderPath,
+				
+				    Source          = AzureStorage.Blobs("https://" & StorageAccount & ".blob.core.windows.net"),
+				    TargetContainer = Source{[Name = Container]}[Data],
+				
+				    CsvFiles = Table.SelectRows(
+				        TargetContainer,
+				        each Text.EndsWith([Name], ".csv")
+				             and (FolderPath = null or FolderPath = "" or Text.StartsWith([Name], FolderPath & "/"))
+				    ),
+				
+				    ParseCsv = (fileContent as binary) as table =>
+				        let
+				            Raw      = Csv.Document(fileContent, [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				            Promoted = Table.PromoteHeaders(Raw, [PromoteAllScalars = true])
+				        in
+				            Promoted,
+				
+				    AddedContent   = Table.AddColumn(CsvFiles, "ParsedTable", each ParseCsv([Content])),
+				    Combined       = Table.Combine(AddedContent[ParsedTable]),
+				
+				    CleanedColumns = Table.RemoveColumns(
+				        Combined,
+				        {"Content", "Name", "Folder Path", "Date accessed", "Date modified", "Date created", "Attributes"},
+				        MissingField.Ignore
+				    ),
+				
+				    // Safely parse UsageDate if it exists
+				    WithUsageDate = if Table.HasColumns(CleanedColumns, "UsageDate")
+				        then Table.TransformColumns(CleanedColumns, {{"UsageDate", each try Date.FromText(_) otherwise null, type date}})
+				        else CleanedColumns,
+				
+				    // Safely parse Date if it exists
+				    WithDate = if Table.HasColumns(WithUsageDate, "Date")
+				        then Table.TransformColumns(WithUsageDate, {{"Date", each try Date.FromText(_) otherwise null, type date}})
+				        else WithUsageDate,
+				
+				    // Safely cast numeric columns only if they exist
+				    WithCost = if Table.HasColumns(WithDate, "PreTaxCost")
+				        then Table.TransformColumns(WithDate, {{"PreTaxCost", each try Number.From(_) otherwise null, type number}})
+				        else WithDate,
+				
+				    WithBillingCost = if Table.HasColumns(WithCost, "CostInBillingCurrency")
+				        then Table.TransformColumns(WithCost, {{"CostInBillingCurrency", each try Number.From(_) otherwise null, type number}})
+				        else WithCost,
+				
+				    WithCostUSD = if Table.HasColumns(WithBillingCost, "CostInUSD")
+				        then Table.TransformColumns(WithBillingCost, {{"CostInUSD", each try Number.From(_) otherwise null, type number}})
+				        else WithBillingCost,
+				
+				    WithCostCol = if Table.HasColumns(WithCostUSD, "Cost")
+				        then Table.TransformColumns(WithCostUSD, {{"Cost", each try Number.From(_) otherwise null, type number}})
+				        else WithCostUSD,
+				
+				    WithQuantity = if Table.HasColumns(WithCostCol, "Quantity")
+				        then Table.TransformColumns(WithCostCol, {{"Quantity", each try Number.From(_) otherwise null, type number}})
+				        else WithCostCol,
+				
+				    TypedTable = if Table.HasColumns(WithQuantity, "UnitPrice")
+				        then Table.TransformColumns(WithQuantity, {{"UnitPrice", each try Number.From(_) otherwise null, type number}})
+				        else WithQuantity,
+				    #"Changed Type" = Table.TransformColumnTypes(TypedTable,{{"costInBillingCurrency", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
