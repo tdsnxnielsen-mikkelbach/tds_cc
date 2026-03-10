@@ -1,0 +1,68 @@
+{
+  "version": "1.0",
+  "name": "TD SYNNEX CSP Cost Reporting (Branded)",
+  "sections": [
+    {
+      "name": "Cost Overview",
+      "visuals": [
+        {
+          "type": "card",
+          "title": "Total Cost (TD SYNNEX)"
+        },
+        {
+          "type": "line",
+          "title": "Monthly Cost Trend"
+        },
+        {
+          "type": "bar",
+          "title": "Top Services by Cost"
+        }
+      ]
+    },
+    {
+      "name": "Subscription Breakdown",
+      "visuals": [
+        {
+          "type": "bar",
+          "title": "Cost by Subscription"
+        }
+      ]
+    },
+    {
+      "name": "Resource Group Breakdown",
+      "visuals": [
+        {
+          "type": "bar",
+          "title": "Cost by Resource Group"
+        }
+      ]
+    },
+    {
+      "name": "Tag Chargeback",
+      "visuals": [
+        {
+          "type": "treemap",
+          "title": "Cost by TagValue"
+        }
+      ]
+    },
+    {
+      "name": "Trend & Forecast",
+      "visuals": [
+        {
+          "type": "line",
+          "title": "Trend with Forecast"
+        }
+      ]
+    },
+    {
+      "name": "MoM Waterfall",
+      "visuals": [
+        {
+          "type": "waterfall",
+          "title": "MoM Variance"
+        }
+      ]
+    }
+  ]
+}

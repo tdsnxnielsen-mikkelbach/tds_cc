@@ -1,0 +1,18 @@
+{
+  "name": "TD SYNNEX | Azure CSP Cost Reporting",
+  "dataColors": [
+    "#005C96",
+    "#009650",
+    "#00AEEF",
+    "#7FBA00",
+    "#0072C6",
+    "#1F7A8C",
+    "#4DB6AC",
+    "#9CCC65",
+    "#F6BD60",
+    "#EE6352"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#1F1F1F",
+  "tableAccent": "#005C96"
+}
