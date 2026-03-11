@@ -1,0 +1,52 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "b15634a809ee284e2310",
+  "position": {
+    "x": 0,
+    "y": 280,
+    "z": 1000,
+    "height": 280,
+    "width": 784.28571428571433,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "CostExports"
+                    }
+                  },
+                  "Property": "SubscriptionId"
+                }
+              },
+              "queryRef": "CostExports.SubscriptionId",
+              "nativeQueryRef": "SubscriptionId"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "CostExports"
+                    }
+                  },
+                  "Property": "subscriptionName"
+                }
+              },
+              "queryRef": "CostExports.subscriptionName",
+              "nativeQueryRef": "subscriptionName"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

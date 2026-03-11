@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "64af7db023c600c79544",
+  "position": {
+    "x": 821.78539224526594,
+    "y": 385.50045085662759,
+    "z": 4,
+    "height": 147.73669972948602,
+    "width": 357.79981965734896,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "CostExports"
+                    }
+                  },
+                  "Property": "Cost YoY %"
+                }
+              },
+              "queryRef": "CostExports.Cost YoY %",
+              "nativeQueryRef": "Cost YoY %"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "CostExports"
+                  }
+                },
+                "Property": "Cost YoY %"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

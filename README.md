@@ -143,15 +143,27 @@ powerbi/
   tds_cc.pbip                          ← open this file in Power BI Desktop
   tds_cc.Report/                       ← report layout, theme, static resources
     .platform                          ← Fabric metadata (type: Report)
-    report.json                        ← full report layout in JSON
-    diagramLayout.json                 ← visual positions on canvas
+    definition.pbir                    ← links report to SemanticModel
+    definition/
+      pages/                           ← one folder per page, each with page.json + visuals/
+      report.json                      ← top-level report config
+      version.json
+    diagramLayout.json
     StaticResources/
       RegisteredResources/             ← registered theme file
       SharedResources/BaseThemes/      ← base Power BI theme
   tds_cc.SemanticModel/                ← data model
     .platform                          ← Fabric metadata (type: SemanticModel)
-    DataModel                          ← binary data model (measures, tables, relationships)
-    definition.pbism                   ← semantic model definition
+    DataModel                          ← binary data model cache
+    definition.pbism
+    definition/
+      tables/
+        CostExports.tmdl               ← all measures + columns + Power Query M
+        DateTable.tmdl                 ← calculated date table
+      relationships.tmdl               ← DateTable[Date] → CostExports[date]
+      model.tmdl
+      database.tmdl
+      expressions.tmdl                 ← parameters (StorageAccountName etc.)
 ```
 
 **To open:** extract the zip, then open `powerbi/tds_cc.pbip` in Power BI Desktop. The three items (`tds_cc.pbip`, `tds_cc.Report/`, `tds_cc.SemanticModel/`) must stay in the same folder — the paths in `.pbip` are relative.
@@ -184,16 +196,17 @@ The file `powerbi/report.json` defines the intended report structure as a refere
 
 ---
 
-### Step 2 — Create the 6 pages
+### Step 2 — Create the 7 pages
 
 At the bottom of Power BI Desktop click the `+` tab to add pages. Name them exactly:
 
 1. `Cost Overview`
-2. `Subscription Breakdown`
-3. `Resource Group Breakdown`
-4. `Tag Chargeback`
-5. `Trend & Forecast`
-6. `MoM Waterfall`
+2. `Budgets`
+3. `Subscription Breakdown`
+4. `Resource Group Breakdown`
+5. `Tag Chargeback`
+6. `Trend & Forecast`
+7. `MoM Waterfall`
 
 > **Tip:** Once a page is built, right-click the tab → **Duplicate Page** as a starting point for the next one.
 
@@ -276,16 +289,17 @@ The diagrams below show the exact layout of each page as extracted from the `.pb
 - **Line chart: YoY Comparison** → X-axis: `DateTable[MonthYear]` → Y-axis: `Total Cost` and `Cost Prior Year` — this year vs last year
 - **Card: Cost Month Forecast** → Field: `Cost Month Forecast`
 - **Card: Cost MTD** → Field: `Cost MTD`
-- **Slicer: Month** → Field: `DateTable[MonthYear]` → Format: Dropdown — synced across all pages via View → Sync slicers
+- **Slicer: Date Range** → Field: `DateTable[Date]` → Format pane → Slicer settings → Style: **Between** — gives a from/to date picker that works correctly with all time intelligence measures; synced across all pages via View → Sync slicers
 
 #### Page 7 — MoM Waterfall
 
 - **Waterfall chart: MoM Variance** → Category: `DateTable[MonthYear]` → Y-axis: `Cost MoM Change` — each bar shows rise or fall vs prior month
-- **Bar chart: MoM by Subscription** → X-axis: `CostExports[subscriptionName]` → Y-axis: `Cost MoM Change` — shows which subscriptions drove the variance
+- **Bar chart: MoM by Subscription** → Y-axis: `CostExports[subscriptionName]` → X-axis: `Cost MoM Change` — shows which subscriptions drove the variance
+  > Note: On a horizontal bar chart Power BI requires the **category (column) on Y-axis** and the **measure on X-axis**. If you prefer vertical bars use a Clustered column chart with X-axis: `subscriptionName` and Y-axis: `Cost MoM Change`.
 - **Card: Cost MoM %** → Field: `Cost MoM %` — format as percentage
 - **Card: Cost MoM Change** → Field: `Cost MoM Change` — raw DKK delta
 - **Card: Cost YoY %** → Field: `Cost YoY %` — format as percentage
-- **Slicer: Month** → Field: `DateTable[MonthYear]` → Format: Dropdown — synced across all pages via View → Sync slicers
+- **Slicer: Date Range** → Field: `DateTable[Date]` → Format pane → Slicer settings → Style: **Between** — synced across all pages via View → Sync slicers
 
 ---
 
@@ -311,10 +325,10 @@ The diagrams below show the exact layout of each page as extracted from the `.pb
 
 ### Step 5 — Budget setup
 
-The `Budget` measure defaults to `0`. To set your monthly DKK target:
+The `Budget` measure defaults to `1000`. To set your actual monthly DKK target:
 
 1. In the Data pane find the `Budget` measure → click it
-2. In the formula bar replace `0` with your monthly amount, e.g.:
+2. In the formula bar replace `1000` with your monthly amount, e.g.:
 ```dax
 Budget = 125000
 ```

@@ -1,25 +1,14 @@
-// TD SYNNEX | Azure CSP Cost Reporting – Date Table
-// 
-// Add this as a Calculated Table in Power BI Desktop:
-//   Modeling → New Table → paste the expression below
-//
-// The table auto-spans from the earliest to latest UsageDate in your data.
-// Mark it as a Date Table:
-//   1. Click any cell in DateTable in the Data view
-//   2. Table tools ribbon (top) → Mark as date table
-//   3. Select the Date column → OK
-//   OR: Modeling tab → Mark as date table
-
-// CALENDARAUTO() automatically spans from the earliest to latest date value
-// found across all date/datetime columns in the model — no table reference needed.
-// If you prefer explicit bounds, replace CALENDARAUTO() with:
-//   CALENDAR ( DATE ( 2024, 1, 1 ), DATE ( 2026, 12, 31 ) )
-
 DateTable =
 ADDCOLUMNS (
-    CALENDAR ( DATE ( 2024, 1, 1 ), DATE ( 2027, 12, 31 ) ),
-    "Year", YEAR ( [Date] ),
-    "Month", MONTH ( [Date] ),
-    "MonthName", FORMAT ( [Date], "MMM" ),
-    "MonthYear", FORMAT ( [Date], "MMM YYYY" )
+    CALENDAR ( DATE ( 2025, 12, 13 ), DATE ( 2026, 12, 31 ) ),
+    "Year",          YEAR ( [Date] ),
+    "Month",         MONTH ( [Date] ),
+    "MonthName",     FORMAT ( [Date], "MMM" ),
+    "MonthYear",     FORMAT ( [Date], "MMM YYYY" ),
+    "MonthYearSort", YEAR ( [Date] ) * 100 + MONTH ( [Date] )
 )
+
+// After creating the table:
+// 1. Data view → click MonthYear column → Column tools → Sort by column → MonthYearSort
+// 2. Table tools → Mark as date table → select Date column → OK
+// 3. Model view → verify relationship: DateTable[Date] → CostExports[date]

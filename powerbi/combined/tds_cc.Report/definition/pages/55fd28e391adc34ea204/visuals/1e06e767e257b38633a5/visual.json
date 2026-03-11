@@ -1,0 +1,57 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "1e06e767e257b38633a5",
+  "position": {
+    "x": 640,
+    "y": 17.142857142857142,
+    "z": 5000,
+    "height": 278.57142857142861,
+    "width": 278.57142857142861,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "CostExports"
+                    }
+                  },
+                  "Property": "Avg Daily Cost"
+                }
+              },
+              "queryRef": "CostExports.Avg Daily Cost",
+              "nativeQueryRef": "Avg Daily Cost",
+              "format": "#,0.00 \"kr.\";-#,0.00 \"kr.\";#,0.00 \"kr.\""
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "CostExports"
+                  }
+                },
+                "Property": "Avg Daily Cost"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

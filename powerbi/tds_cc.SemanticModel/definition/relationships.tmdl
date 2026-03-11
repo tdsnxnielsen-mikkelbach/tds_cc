@@ -1,0 +1,4 @@
+relationship 689085a9-a216-41d9-0f78-921d39747da8
+	fromColumn: CostExports.date
+	toColumn: DateTable.Date
+

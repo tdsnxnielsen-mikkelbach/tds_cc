@@ -1,154 +1,80 @@
-// TD SYNNEX | Azure CSP Cost Reporting – DAX Measures
-//
-// !! IMPORTANT — READ BEFORE ADDING MEASURES !!
-//
-// 1. Each measure must be added INDIVIDUALLY via Modeling → New Measure.
-//    Do NOT paste this entire file at once.
-//
-// 2. TABLE NAME: The measures below use "CostExports" as the table name.
-//    You must replace "CostExports" with whatever name your query has in
-//    Power BI. To find it:
-//      → Open Transform Data (Power Query Editor)
-//      → Look at the left Queries pane — the name shown there is your table name
-//      → Use that exact name in place of "CostExports" in every measure below
-//
-// 3. COLUMN NAME: The measures assume "CostInBillingCurrency" as the cost column.
-//    If your export uses a different column (e.g. "CostInBillingCurrency" or "Cost"),
-//    replace "CostInBillingCurrency" accordingly.
-//
-// 4. Requires: DateTable created and marked as date table (see calendar.dax)
-//    Add MEASURE 1 first — all others depend on it.
-//
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 1 — Add this first, all others depend on it
-//
-// Replace "CostExports" with your actual query/table name (see note above).
-//
-// Replace the column name below if yours differs (e.g. PreTaxCost for EA exports).
-//   Common options from Azure Cost Management exports:
-//     CostInBillingCurrency   ← most common for CSP / MCA
-//     CostInBillingCurrency              ← common for EA
-//     Cost                    ← used in some export schemas
-//     CostInUSD
-//
-// To check: Data view → click your table → look at the column headers
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── TOTAL COST ───────────────────────────────────────────────────────────────
+Total Cost = SUM ( CostExports[costInBillingCurrency] )
 
-Total Cost = SUMX ( CostExports, VALUE ( IF ( [costInBillingCurrency] = "", "0", [costInBillingCurrency] ) ) )
+// ─── TIME INTELLIGENCE ────────────────────────────────────────────────────────
+Cost MTD =
+VAR _LastDate = MAX ( DateTable[Date] )
+VAR _FirstOfMonth = DATE ( YEAR ( _LastDate ), MONTH ( _LastDate ), 1 )
+RETURN
+CALCULATE ( [Total Cost], DATESBETWEEN ( DateTable[Date], _FirstOfMonth, _LastDate ) )
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 2
-// ─────────────────────────────────────────────────────────────────────────────
+Cost QTD = CALCULATE ( [Total Cost], DATESQTD ( DateTable[Date] ) )
 
-Cost MTD = TOTALMTD ( [Total Cost], DateTable[Date] )
+Cost YTD = CALCULATE ( [Total Cost], DATESYTD ( DateTable[Date] ) )
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 3
-// ─────────────────────────────────────────────────────────────────────────────
-
-Cost QTD = TOTALQTD ( [Total Cost], DateTable[Date] )
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 4
-// ─────────────────────────────────────────────────────────────────────────────
-
-Cost YTD = TOTALYTD ( [Total Cost], DateTable[Date] )
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 5
-// ─────────────────────────────────────────────────────────────────────────────
-
-Cost Prior Month = CALCULATE ( [Total Cost], PREVIOUSMONTH ( DateTable[Date] ) )
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 6
-// ─────────────────────────────────────────────────────────────────────────────
-
-Cost MoM Change = [Total Cost] - [Cost Prior Month]
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 7
-// ─────────────────────────────────────────────────────────────────────────────
-
-Cost MoM % = DIVIDE ( [Cost MoM Change], [Cost Prior Month] )
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 8
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── PRIOR PERIOD ─────────────────────────────────────────────────────────────
+Cost Prior Month =
+VAR _MaxDate = MAX ( DateTable[Date] )
+VAR _CurrentMonth = MONTH ( _MaxDate )
+VAR _CurrentYear = YEAR ( _MaxDate )
+VAR _PriorMonth = IF ( _CurrentMonth = 1, 12, _CurrentMonth - 1 )
+VAR _PriorYear = IF ( _CurrentMonth = 1, _CurrentYear - 1, _CurrentYear )
+RETURN
+CALCULATE (
+    [Total Cost],
+    FILTER (
+        ALL ( DateTable ),
+        MONTH ( DateTable[Date] ) = _PriorMonth
+        && YEAR ( DateTable[Date] ) = _PriorYear
+    )
+)
 
 Cost Prior Year = CALCULATE ( [Total Cost], SAMEPERIODLASTYEAR ( DateTable[Date] ) )
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 9
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── MOM VARIANCE ─────────────────────────────────────────────────────────────
+Cost MoM Change = [Total Cost] - [Cost Prior Month]
 
-Cost YoY % = DIVIDE ( [Total Cost] - [Cost Prior Year], [Cost Prior Year] )
+Cost MoM % =
+IF (
+    ISBLANK ( [Cost Prior Month] ) || [Cost Prior Month] = 0,
+    BLANK (),
+    DIVIDE ( [Cost MoM Change], [Cost Prior Month] )
+)
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 10
-// ─────────────────────────────────────────────────────────────────────────────
+Cost YoY % =
+IF (
+    ISBLANK ( [Cost Prior Year] ) || [Cost Prior Year] = 0,
+    BLANK (),
+    DIVIDE ( [Total Cost] - [Cost Prior Year], [Cost Prior Year] )
+)
 
+// ─── AVERAGES & FORECAST ──────────────────────────────────────────────────────
 Avg Daily Cost = AVERAGEX ( VALUES ( DateTable[Date] ), CALCULATE ( [Total Cost] ) )
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 11
-// ─────────────────────────────────────────────────────────────────────────────
 
 Avg Monthly Cost = AVERAGEX ( VALUES ( DateTable[MonthYear] ), CALCULATE ( [Total Cost] ) )
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 12 — Projects full-month cost based on MTD spend and days elapsed
-// ─────────────────────────────────────────────────────────────────────────────
+Cost Month Forecast =
+VAR _Days = DAY ( EOMONTH ( TODAY (), 0 ) )
+VAR _Day = DAY ( TODAY () )
+RETURN IF ( _Day > 0, DIVIDE ( [Cost MTD], _Day ) * _Days )
 
-Cost Month Forecast = VAR _Days = DAY ( EOMONTH ( TODAY (), 0 ) ) VAR _Day = DAY ( TODAY () ) RETURN IF ( _Day > 0, DIVIDE ( [Cost MTD], _Day ) * _Days )
+Rolling 3M Avg = AVERAGEX (
+    DATESINPERIOD ( DateTable[Date], LASTDATE ( DateTable[Date] ), -3, MONTH ),
+    CALCULATE ( [Total Cost] )
+)
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 13
-// Replace "CostExports" with your actual query/table name
-// ─────────────────────────────────────────────────────────────────────────────
-
-Top N Cost Share % = DIVIDE ( [Total Cost], CALCULATE ( [Total Cost], ALL ( CostExports ) ) )
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 14 — Total Cost formatted as DKK currency string (for cards/labels)
-// Use this on cards where you want "kr. 1,234.56" displayed
-// Do NOT use this in calculations — use [Total Cost] for that
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── DISPLAY & CURRENCY ───────────────────────────────────────────────────────
 Total Cost DKK = "kr. " & FORMAT ( [Total Cost], "#,##0.00" )
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 15 — Total Cost in USD (using costInUsd column)
-// ─────────────────────────────────────────────────────────────────────────────
 
 Total Cost USD = SUMX ( CostExports, VALUE ( IF ( [costInUsd] = "", "0", [costInUsd] ) ) )
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 16 — Average exchange rate USD to DKK for the period
-// ─────────────────────────────────────────────────────────────────────────────
-
 Avg Exchange Rate = AVERAGE ( CostExports[exchangeRatePricingToBilling] )
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 17 — Rolling 3-month average cost
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── SHARE & BUDGET ───────────────────────────────────────────────────────────
+Top N Cost Share % = DIVIDE ( [Total Cost], CALCULATE ( [Total Cost], ALL ( CostExports ) ) )
 
-Rolling 3M Avg = AVERAGEX ( DATESINPERIOD ( DateTable[Date], LASTDATE ( DateTable[Date] ), -3, MONTH ), CALCULATE ( [Total Cost] ) )
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 18 — Budget (replace 0 with your target amount in DKK)
-// ─────────────────────────────────────────────────────────────────────────────
-
-Budget = 0
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 19 — Budget Variance (actual vs budget)
-// ─────────────────────────────────────────────────────────────────────────────
+Budget = 1000  // ← replace with your monthly DKK target
 
 Budget Variance = [Total Cost] - [Budget]
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MEASURE 20 — Budget Variance %
-// ─────────────────────────────────────────────────────────────────────────────
 
 Budget Variance % = DIVIDE ( [Budget Variance], [Budget] )
