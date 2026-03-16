@@ -222,7 +222,7 @@ At the bottom of Power BI Desktop click the `+` tab to add pages. Name them exac
 
 ### Report page layout diagrams
 
-The diagrams below show the exact layout of each page as extracted from the `.pbix` file — visual type, field, and position are all taken directly from the report.
+The diagrams below show a **reference implementation** of the report — one way the pages can be laid out using the measures and data model included in this kit. They are not prescriptive. Any user is free to build the report however they like: add, remove, or rearrange visuals, choose different chart types, or design entirely new pages. The layout is just a starting point.
 
 > Images are stored in `powerbi/visuals/` and are referenced relative to the README.
 
@@ -653,3 +653,19 @@ az account set --subscription <customer-subscription-id>
 - Set up GDAP: https://learn.microsoft.com/partner-center/gdap-introduction
 - AOBO overview: https://learn.microsoft.com/azure/cost-management-billing/manage/direct-ea-administration
 - Cost Management for CSP partners: https://learn.microsoft.com/azure/cost-management-billing/costs/get-started-partners
+
+---
+
+## Open Source
+
+This project is open source and freely available for use, modification, and distribution.
+
+**License: MIT**
+
+Copyright (c) 2026 TD SYNNEX
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

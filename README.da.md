@@ -195,6 +195,10 @@ Klik på `+`-fanen nederst i Power BI Desktop for at tilføje sider. Navngiv dem
 
 ### Sidelayoutdiagrammer
 
+Diagrammerne nedenfor viser en **referenceimplementering** af rapporten — én måde siderne kan bygges op på ved hjælp af de målinger og den datamodel der er inkluderet i dette kit. De er ikke normative. Enhver bruger er fri til at bygge rapporten præcis som de ønsker: tilføj, fjern eller flyt visualiseringer, vælg andre diagramtyper, eller design helt nye sider. Layoutet er blot et udgangspunkt.
+
+> Billeder er gemt i `powerbi/visuals/` og refereres relativt til README-filen.
+
 **Side 1 — Cost Overview**
 ![Cost Overview](powerbi/visuals/page_Cost_Overview.png)
 
@@ -505,3 +509,19 @@ Hvis forhandleren har DAP- eller GDAP-adgang, kan de selv deployere abonnementst
 - Opsæt GDAP: https://learn.microsoft.com/partner-center/gdap-introduction
 - AOBO-oversigt: https://learn.microsoft.com/azure/cost-management-billing/manage/direct-ea-administration
 - Cost Management for CSP-partnere: https://learn.microsoft.com/azure/cost-management-billing/costs/get-started-partners
+
+---
+
+## Open source
+
+Dette projekt er open source og frit tilgængeligt til brug, ændring og distribution.
+
+**Licens: MIT**
+
+Copyright (c) 2026 TD SYNNEX
+
+Hermed gives tilladelse, vederlagsfrit, til enhver person der erhverver en kopi af denne software og tilhørende dokumentationsfiler ("Softwaren"), til at handle med Softwaren uden begrænsninger, herunder uden begrænsning rettighederne til at bruge, kopiere, ændre, flette, udgive, distribuere, underlicensere og/eller sælge kopier af Softwaren, og til at tillade personer som Softwaren leveres til at gøre det samme, med forbehold for følgende betingelser:
+
+Ovenstående ophavsretsmeddelelse og denne tilladelsesmeddelelse skal inkluderes i alle kopier eller væsentlige dele af Softwaren.
+
+SOFTWAREN LEVERES "SOM DEN ER", UDEN GARANTI AF NOGEN ART, HVERKEN UDTRYKKELIG ELLER UNDERFORSTÅET, HERUNDER MEN IKKE BEGRÆNSET TIL GARANTIER FOR SALGBARHED, EGNETHED TIL ET BESTEMT FORMÅL OG IKKE-KRÆNKELSE. UNDER INGEN OMSTÆNDIGHEDER MÅ FORFATTERNE ELLER OPHAVSRETSINDEHAVERNE HOLDES ANSVARLIGE FOR NOGEN KRAV, SKADER ELLER ANDET ANSVAR, HVAD ENTEN DET ER I EN KONTRAKTLIG HANDLING, ERSTATNINGSSAG ELLER PÅ ANDEN MÅDE, DER OPSTÅR FRA, UD AF ELLER I FORBINDELSE MED SOFTWAREN ELLER BRUGEN ELLER ANDRE HANDLINGER I SOFTWAREN.
