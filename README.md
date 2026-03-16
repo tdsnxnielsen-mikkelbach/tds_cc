@@ -334,6 +334,70 @@ Budget = 125000
 ```
 3. Press Enter — all Budget Variance and Budget Variance % measures will update automatically
 
+---
+
+### Step 6 — White-label branding (optional)
+
+The file `powerbi/tdsynnex-theme.json` controls all colours and typography in the report. To rebrand the report for a different organisation, edit this file and re-apply it in Power BI Desktop.
+
+#### Theme file structure
+
+```json
+{
+  "name": "TD SYNNEX | Azure CSP Cost Reporting",
+  "dataColors": [
+    "#005C96",
+    "#009650",
+    "#00AEEF",
+    "#7FBA00",
+    "#0072C6",
+    "#1F7A8C",
+    "#4DB6AC",
+    "#9CCC65",
+    "#F6BD60",
+    "#EE6352"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#1F1F1F",
+  "tableAccent": "#005C96"
+}
+```
+
+| Property | What it controls | Example |
+|---|---|---|
+| `name` | Theme name shown in Power BI's theme picker | `"Contoso \| Azure Cost Reporting"` |
+| `dataColors` | The 10 chart colours used in sequence for bars, lines, donuts, etc. | Replace with brand hex codes |
+| `background` | Report canvas background colour | `"#F8F8F8"` for a light grey canvas |
+| `foreground` | Default text and label colour | `"#1F1F1F"` (near-black) recommended for readability |
+| `tableAccent` | Highlight colour used on table headers and selected rows | Usually the primary brand colour |
+
+#### How to rebrand
+
+1. Open `powerbi/tdsynnex-theme.json` in any text editor
+2. Replace the `name` value with your organisation name
+3. Replace the `dataColors` array with your brand colour palette — keep all 10 entries; Power BI cycles through them in order
+4. Update `tableAccent` to match your primary brand colour
+5. Save the file
+6. In Power BI Desktop: **View → Themes → Browse** → select your edited `tdsynnex-theme.json`
+7. Save the report
+
+> **Tip:** If you only have 2–3 brand colours, repeat or vary them across the 10 slots. The first colour in `dataColors` is used most prominently — put your primary brand colour first.
+
+#### Adding a company logo
+
+Power BI does not support logos via the theme JSON file — logos are added as image visuals directly on the canvas:
+
+1. Prepare a PNG or SVG of your logo — a transparent background with the logo at roughly 200×60 px works well for the report header area
+2. In Power BI Desktop: **Insert ribbon → Image** → select your logo file
+3. Resize and position it in the top-left or top-right corner of the page
+4. Right-click the image → **Format image** → set background to `None` and border to `None` for a clean look
+5. To apply to all pages: right-click the image → **Copy** → navigate to each page → **Ctrl+V** to paste in the same position, or use **Edit → Paste Special** to retain exact placement
+6. Alternatively, add the logo to a Power BI background image: design a full-canvas background in PowerPoint or Figma that includes the logo and export as PNG, then set it via **Format pane → Canvas background → Image**
+
+> **Note:** Logo images are embedded in the `.pbix`/`.pbip` report file when saved — they do not need to be distributed separately.
+
+---
+
 ## Azure Roles & Permissions Required
 
 ### Subscription Mode
