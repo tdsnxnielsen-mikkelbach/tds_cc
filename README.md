@@ -1,6 +1,14 @@
 # TD SYNNEX – Azure CSP Cost Reporting
 
-Automates Azure Cost Management exports and feeds them into a Power BI dashboard.
+> 🇩🇰 [Dansk version](README.da.md)
+
+This kit gives TD SYNNEX and its reseller partners a fully automated, end-to-end Azure cost reporting solution built on native Microsoft tooling — no third-party services, no manual data pulls.
+
+Azure Cost Management exports are scheduled to run daily and write CSV files directly to Azure Blob Storage. A Power BI report connected to that storage reads, combines, and models the data automatically on every refresh. The result is a live, self-updating dashboard that shows spend by subscription, resource group, service, and tag — with month-over-month variance, year-on-year trends, budget tracking, and a month-end forecast built in.
+
+The solution supports two deployment modes. In **subscription mode**, exports are scoped to individual Azure subscriptions and authenticated via managed identity — suitable for direct customers or internal use. In **billing account mode**, exports are scoped to the CSP billing account and authenticated via SAS token, enabling TD SYNNEX to pull cost data across all reseller customer subscriptions from a single deployment. Both modes are deployed via a single Bicep template and a PowerShell or Bash script.
+
+The Power BI report is distributed as both a `.pbix` single file and a `.pbip` project folder. The project format stores all report layout and data model definitions as plain-text TMDL and JSON files, making the report fully auditable and compatible with Git version control and Microsoft Fabric CI/CD pipelines. The theme and colour palette are externalised to a JSON file for straightforward white-labelling.
 
 ## Project structure
 
