@@ -61,7 +61,7 @@ table DateTable
 		source =
 				
 				ADDCOLUMNS (
-				    CALENDAR ( DATE ( 2025, 12, 13 ), DATE ( 2026, 12, 31 ) ),
+				    CALENDAR ( DATE ( 2025, 12, 31 ), DATE ( 2026, 12, 31 ) ),
 				    "Year", YEAR ( [Date] ),
 				    "Month", MONTH ( [Date] ),
 				    "MonthName", FORMAT ( [Date], "MMM" ),

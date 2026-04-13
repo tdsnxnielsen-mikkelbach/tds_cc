@@ -7,8 +7,6 @@
 
 targetScope = 'subscription'
 
-param runTimestamp string = utcNow('yyyy-MM-ddTHH:mm:ssZ')
-
 // ── Export Destination ────────────────────────────────────────────────────────
 
 @description('Name of the export task (e.g., daily-cost-export).')

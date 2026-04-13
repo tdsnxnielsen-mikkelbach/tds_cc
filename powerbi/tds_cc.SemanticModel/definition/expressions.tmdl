@@ -1,4 +1,4 @@
-expression StorageAccountName = "stocost" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression StorageAccountName = "stcostexportsais" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 	lineageTag: 8d7a2f87-630a-4781-8f2c-436f97a2b6c9
 
 	annotation PBI_NavigationStepName = Navigation

@@ -120,67 +120,11 @@ table CostExports
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	column invoiceId
-		dataType: string
-		lineageTag: f5f8bfed-367f-40de-90bd-0a0d1e5c187b
-		summarizeBy: none
-		sourceColumn: invoiceId
-
-		annotation SummarizationSetBy = Automatic
-
-	column previousInvoiceId
-		dataType: string
-		lineageTag: af8a2095-caca-4776-8abf-201ef79fb8a5
-		summarizeBy: none
-		sourceColumn: previousInvoiceId
-
-		annotation SummarizationSetBy = Automatic
-
-	column billingAccountId
-		dataType: string
-		lineageTag: c3ac8756-4942-41a0-8f5e-b98b06245d23
-		summarizeBy: none
-		sourceColumn: billingAccountId
-
-		annotation SummarizationSetBy = Automatic
-
 	column billingAccountName
 		dataType: string
 		lineageTag: 12e949d7-0664-4312-927f-da40004b6024
 		summarizeBy: none
 		sourceColumn: billingAccountName
-
-		annotation SummarizationSetBy = Automatic
-
-	column billingProfileId
-		dataType: string
-		lineageTag: 9c5881fa-4d49-4061-a627-f20379963990
-		summarizeBy: none
-		sourceColumn: billingProfileId
-
-		annotation SummarizationSetBy = Automatic
-
-	column billingProfileName
-		dataType: string
-		lineageTag: cbd07bc9-e60a-406e-a90c-6cdfd72934f1
-		summarizeBy: none
-		sourceColumn: billingProfileName
-
-		annotation SummarizationSetBy = Automatic
-
-	column invoiceSectionId
-		dataType: string
-		lineageTag: e18a6a30-486e-4bdb-9b7f-19e91ffbed9a
-		summarizeBy: none
-		sourceColumn: invoiceSectionId
-
-		annotation SummarizationSetBy = Automatic
-
-	column invoiceSectionName
-		dataType: string
-		lineageTag: 811e6a52-f8d9-4f5f-9a2d-33abb358b7d0
-		summarizeBy: none
-		sourceColumn: invoiceSectionName
 
 		annotation SummarizationSetBy = Automatic
 
@@ -471,35 +415,11 @@ table CostExports
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	column costInPricingCurrency
-		dataType: string
-		lineageTag: f9ee0f56-2b5b-4a72-958e-b09ba47f76fa
-		summarizeBy: none
-		sourceColumn: costInPricingCurrency
-
-		annotation SummarizationSetBy = Automatic
-
 	column costInUsd
 		dataType: string
 		lineageTag: ac411875-3578-42b7-937c-0c1e6075d834
 		summarizeBy: none
 		sourceColumn: costInUsd
-
-		annotation SummarizationSetBy = Automatic
-
-	column paygCostInBillingCurrency
-		dataType: string
-		lineageTag: 66618055-4a57-4ba0-b2f7-5c8ab8b22b8f
-		summarizeBy: none
-		sourceColumn: paygCostInBillingCurrency
-
-		annotation SummarizationSetBy = Automatic
-
-	column paygCostInUsd
-		dataType: string
-		lineageTag: 7aec13e4-b161-40d9-ba9c-59ea882b02fe
-		summarizeBy: none
-		sourceColumn: paygCostInUsd
 
 		annotation SummarizationSetBy = Automatic
 
@@ -516,14 +436,6 @@ table CostExports
 		lineageTag: 3d19d491-59da-4f18-be63-d42ce060a917
 		summarizeBy: none
 		sourceColumn: exchangeRateDate
-
-		annotation SummarizationSetBy = Automatic
-
-	column isAzureCreditEligible
-		dataType: string
-		lineageTag: 8cdee810-5ba6-4b18-a0c1-71306a879701
-		summarizeBy: none
-		sourceColumn: isAzureCreditEligible
 
 		annotation SummarizationSetBy = Automatic
 
@@ -615,14 +527,6 @@ table CostExports
 
 		annotation SummarizationSetBy = Automatic
 
-	column costAllocationRuleName
-		dataType: string
-		lineageTag: 88bb1893-98cf-4c28-a068-49881b6bce04
-		summarizeBy: none
-		sourceColumn: costAllocationRuleName
-
-		annotation SummarizationSetBy = Automatic
-
 	column benefitId
 		dataType: string
 		lineageTag: 9f2e5830-d816-4911-826a-b83f28b69b74
@@ -644,6 +548,30 @@ table CostExports
 		lineageTag: a5bf3de3-8fcf-4483-bdf1-ff9680a97f01
 		summarizeBy: none
 		sourceColumn: provider
+
+		annotation SummarizationSetBy = Automatic
+
+	column partnerName
+		dataType: string
+		lineageTag: eb375dcb-c3d7-4b4f-8c7e-a5bea2b63550
+		summarizeBy: none
+		sourceColumn: partnerName
+
+		annotation SummarizationSetBy = Automatic
+
+	column customerTenantId
+		dataType: string
+		lineageTag: 383a04f7-c76c-4da5-a886-461d223ba19c
+		summarizeBy: none
+		sourceColumn: customerTenantId
+
+		annotation SummarizationSetBy = Automatic
+
+	column customerName
+		dataType: string
+		lineageTag: d256dec0-326b-498e-804c-c79547878e51
+		summarizeBy: none
+		sourceColumn: customerName
 
 		annotation SummarizationSetBy = Automatic
 

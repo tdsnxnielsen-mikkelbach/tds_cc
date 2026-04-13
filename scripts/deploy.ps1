@@ -163,11 +163,35 @@ if ($Mode -eq 'subscription') {
 
   Write-Host "`n=== Phase 2: Deploy subscription-scope export ===" -ForegroundColor Cyan
 
+  # Register the CostManagementExports provider if not already registered
+  Write-Host "  Registering Microsoft.CostManagementExports provider..." -ForegroundColor Gray
+  az provider register --namespace Microsoft.CostManagementExports | Out-Null
+
+  # Wait for provider registration to complete
+  $maxAttempts = 30
+  $attempt = 0
+  while ($attempt -lt $maxAttempts) {
+    $providerState = az provider show --namespace Microsoft.CostManagementExports --query registrationState -o tsv
+    if ($providerState -eq 'Registered') {
+      Write-Host "  Provider registered successfully." -ForegroundColor Green
+      break
+    }
+    $attempt++
+    if ($attempt -lt $maxAttempts) {
+      Start-Sleep -Seconds 2
+    }
+  }
+
   $exportOut = az deployment sub create `
     --location $Location `
     --template-file ./bicep/export-sub.bicep `
     --parameters storageAccountResourceId=$saId location=$Location @commonExportParams `
     --query properties.outputs -o json | ConvertFrom-Json
+
+  if (-not $exportOut.managedIdentityPrincipalId) {
+    Write-Error "Export deployment succeeded but managed identity principal ID was not returned. The deployment may have failed partially."
+    exit 1
+  }
 
   $principalId = $exportOut.managedIdentityPrincipalId.value
   Write-Host "  Export deployed. Managed identity principal ID: $principalId" -ForegroundColor Green

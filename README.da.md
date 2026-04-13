@@ -68,7 +68,11 @@ powerbi/
 
 **Abonnementstilstand** anbefales til de fleste deployeringer — ingen SAS-token at administrere og ingen tilladelser på lejer-niveau krævet.
 
----
+## Seneste forbedringer
+
+- **Automatisk providerregistrering** — Deployeringsscriptet registrerer nu automatisk `Microsoft.CostManagementExports`-provideren hvis den ikke allerede er registreret, hvilket eliminerer "RP Not Registered"-fejlen
+- **Forbedret fejlhåndtering** — Scriptet validerer at eksportdeployeringen blev fuldført før det forsøger at tilgå managed identity-principal-ID'et
+- **Renere skabeloner** — Fjernede ubrugte parametre for at forbedre lintercompliance
 
 ## Brug (PowerShell)
 
@@ -131,7 +135,7 @@ bash ./scripts/deploy.sh \
 ## Hvad der deployeres (abonnementstilstand, trin for trin)
 
 1. **Fase 1** — Storage-konto og blob-container oprettes i ressourcegruppen
-2. **Fase 2** — Cost Management-eksport oprettes på abonnementsomfang med en systemtildelt managed identity; managed identity-principal-ID'et hentes fra outputtet
+2. **Fase 2** — `Microsoft.CostManagementExports`-provideren registreres automatisk med dit abonnement (hvis ikke allerede registreret); Cost Management-eksport oprettes på abonnementsomfang med en systemtildelt managed identity; managed identity-principal-ID'et hentes fra outputtet
 3. **Fase 3** — `main.bicep` gendeployeres for at tilføje en `Storage Blob Data Contributor`-rolletildeling, der giver managed identity skriveadgang til storage-kontoen
 
 ---

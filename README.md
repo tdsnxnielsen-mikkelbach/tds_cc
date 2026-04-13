@@ -65,6 +65,12 @@ powerbi/
 
 **Subscription mode** is recommended for most deployments — no SAS token to manage and no tenant-level permissions required.
 
+## Recent improvements
+
+- **Automatic provider registration** — The deployment script now automatically registers the `Microsoft.CostManagementExports` provider if not already registered, eliminating the "RP Not Registered" error
+- **Improved error handling** — The script validates that the export deployment completed successfully before attempting to access the managed identity principal ID
+- **Cleaner templates** — Removed unused parameters to improve linter compliance
+
 ## Usage (PowerShell)
 
 ```powershell
@@ -122,7 +128,7 @@ bash ./scripts/deploy.sh \
 ## What gets deployed (subscription mode, step by step)
 
 1. **Phase 1** — Storage account and blob container are created in the resource group
-2. **Phase 2** — Cost Management export is created at subscription scope with a system-assigned managed identity; the managed identity principal ID is captured from the output
+2. **Phase 2** — `Microsoft.CostManagementExports` provider is automatically registered with your subscription (if not already registered); Cost Management export is created at subscription scope with a system-assigned managed identity; the managed identity principal ID is captured from the output
 3. **Phase 3** — `main.bicep` is redeployed to add a `Storage Blob Data Contributor` role assignment, granting the managed identity write access to the storage account
 
 ## Power BI Configuration
